@@ -39,7 +39,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'gh-pages') {
-    ENV.rootURL = "https://amazingjaze.github.io/super-rentals/";
+    ENV.rootURL = "/super-rentals/";
   }
 
   return ENV;
