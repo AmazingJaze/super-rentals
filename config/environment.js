@@ -39,7 +39,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.rootURL = "AmazingJaze.github.io/super-rentals/";
   }
 
   return ENV;
