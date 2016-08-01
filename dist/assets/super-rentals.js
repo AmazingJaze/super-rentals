@@ -86,11 +86,24 @@ define('super-rentals/controllers/index', ['exports', 'ember'], function (export
   exports['default'] = _ember['default'].Controller.extend({
     actions: {
       filterByCity: function filterByCity(param) {
+        //this.model
+
+        //rs_onecore_webplat
+
+        var filteredResults;
+
         if (param !== '') {
-          return this.get('store').query('rental', { city: param });
+          //return Promise.resolve(this.model);
+          filteredResults = this.model.filter(function (rental) {
+            return rental.city.toLowerCase().includes(param.toLowerCase());
+          });
+          //   return this.get('store').query('rental', { city: param });
         } else {
-          return this.get('store').findAll('rental');
-        }
+            filteredResults = this.model;
+            //   return this.get('store').findAll('rental');
+          }
+
+        return Promise.resolve(filteredResults);
       }
     }
   });
@@ -1075,17 +1088,60 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
       };
     })();
     var child1 = (function () {
+      var child0 = (function () {
+        return {
+          meta: {
+            "revision": "Ember@2.7.0",
+            "loc": {
+              "source": null,
+              "start": {
+                "line": 23,
+                "column": 4
+              },
+              "end": {
+                "line": 25,
+                "column": 4
+              }
+            },
+            "moduleName": "super-rentals/templates/index.hbs"
+          },
+          isEmpty: false,
+          arity: 1,
+          cachedFragment: null,
+          hasRendered: false,
+          buildFragment: function buildFragment(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("      ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("li");
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
+            var morphs = new Array(1);
+            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
+            return morphs;
+          },
+          statements: [["inline", "rental-listing", [], ["rental", ["subexpr", "@mut", [["get", "rentalUnit", ["loc", [null, [24, 34], [24, 44]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [24, 10], [24, 46]]], 0, 0]],
+          locals: ["rentalUnit"],
+          templates: []
+        };
+      })();
       return {
         meta: {
           "revision": "Ember@2.7.0",
           "loc": {
             "source": null,
             "start": {
-              "line": 14,
+              "line": 19,
               "column": 0
             },
             "end": {
-              "line": 16,
+              "line": 27,
               "column": 0
             }
           },
@@ -1099,7 +1155,14 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
           var el0 = dom.createDocumentFragment();
           var el1 = dom.createTextNode("  ");
           dom.appendChild(el0, el1);
-          var el1 = dom.createComment("");
+          var el1 = dom.createElement("ul");
+          dom.setAttribute(el1, "class", "results");
+          var el2 = dom.createTextNode("\n");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createComment("");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("  ");
+          dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
           dom.appendChild(el0, el1);
@@ -1107,12 +1170,12 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
           var morphs = new Array(1);
-          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
+          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
           return morphs;
         },
-        statements: [["inline", "rental-listing", [], ["rental", ["subexpr", "@mut", [["get", "rental", ["loc", [null, [15, 26], [15, 32]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [15, 2], [15, 34]]], 0, 0]],
-        locals: ["rental"],
-        templates: []
+        statements: [["block", "each", [["get", "rentals", ["loc", [null, [23, 12], [23, 19]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [23, 4], [25, 13]]]]],
+        locals: ["rentals"],
+        templates: [child0]
       };
     })();
     return {
@@ -1126,7 +1189,7 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
           },
           "end": {
             "line": 28,
-            "column": 3
+            "column": 0
           }
         },
         "moduleName": "super-rentals/templates/index.hbs"
@@ -1165,23 +1228,24 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
         var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n\n");
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("\n{{#each model as |rental|}}\n  {{rental-listing rental=rental}}\n{{/each}}");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createComment("\n{{#list-filter\n   filter=(action 'filterByCity')\n   as |rentals|}}\n  <ul class=\"results\">\n    {{#each rentals as |rentalUnit|}}\n      <li>{{rental-listing rental=rentalUnit}}</li>\n    {{/each}}\n  </ul>\n{{/list-filter}}");
         dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(2);
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 7, 7);
-        morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
+        morphs[1] = dom.createMorphAt(fragment, 4, 4, contextualElement);
+        dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "link-to", ["about"], ["class", "button"], 0, null, ["loc", [null, [8, 2], [10, 14]]]], ["block", "each", [["get", "model", ["loc", [null, [14, 8], [14, 13]]], 0, 0, 0, 0]], [], 1, null, ["loc", [null, [14, 0], [16, 9]]]]],
+      statements: [["block", "link-to", ["about"], ["class", "button"], 0, null, ["loc", [null, [8, 2], [10, 14]]]], ["block", "list-filter", [], ["filter", ["subexpr", "action", ["filterByCity"], [], ["loc", [null, [20, 10], [20, 33]]], 0, 0]], 1, null, ["loc", [null, [19, 0], [27, 16]]]]],
       locals: [],
       templates: [child0, child1]
     };
