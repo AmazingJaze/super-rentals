@@ -155,51 +155,6 @@ define('super-rentals/initializers/data-adapter', ['exports', 'ember'], function
     initialize: _ember['default'].K
   };
 });
-define('super-rentals/initializers/ember-cli-mirage', ['exports', 'ember-cli-mirage/utils/read-modules', 'super-rentals/config/environment', 'super-rentals/mirage/config', 'ember-cli-mirage/server', 'lodash/object/assign'], function (exports, _emberCliMirageUtilsReadModules, _superRentalsConfigEnvironment, _superRentalsMirageConfig, _emberCliMirageServer, _lodashObjectAssign) {
-  exports.startMirage = startMirage;
-  exports['default'] = {
-    name: 'ember-cli-mirage',
-    initialize: function initialize(application) {
-      if (arguments.length > 1) {
-        // Ember < 2.1
-        var container = arguments[0],
-            application = arguments[1];
-      }
-
-      if (_shouldUseMirage(_superRentalsConfigEnvironment['default'].environment, _superRentalsConfigEnvironment['default']['ember-cli-mirage'])) {
-        startMirage(_superRentalsConfigEnvironment['default']);
-      }
-    }
-  };
-
-  function startMirage() {
-    var env = arguments.length <= 0 || arguments[0] === undefined ? _superRentalsConfigEnvironment['default'] : arguments[0];
-
-    var environment = env.environment;
-    var modules = (0, _emberCliMirageUtilsReadModules['default'])(env.modulePrefix);
-    var options = (0, _lodashObjectAssign['default'])(modules, { environment: environment, baseConfig: _superRentalsMirageConfig['default'], testConfig: _superRentalsMirageConfig.testConfig });
-
-    return new _emberCliMirageServer['default'](options);
-  }
-
-  function _shouldUseMirage(env, addonConfig) {
-    var userDeclaredEnabled = typeof addonConfig.enabled !== 'undefined';
-    var defaultEnabled = _defaultEnabled(env, addonConfig);
-
-    return userDeclaredEnabled ? addonConfig.enabled : defaultEnabled;
-  }
-
-  /*
-    Returns a boolean specifying the default behavior for whether
-    to initialize Mirage.
-  */
-  function _defaultEnabled(env, addonConfig) {
-    var usingInDev = env === 'development' && !addonConfig.usingProxy;
-    var usingInTest = env === 'test';
-
-    return usingInDev || usingInTest;
-  }
-});
 define('super-rentals/initializers/ember-data', ['exports', 'ember-data/setup-container', 'ember-data/-private/core'], function (exports, _emberDataSetupContainer, _emberDataPrivateCore) {
 
   /*
@@ -324,80 +279,6 @@ define("super-rentals/instance-initializers/ember-data", ["exports", "ember-data
     initialize: _emberDataPrivateInstanceInitializersInitializeStoreService["default"]
   };
 });
-define('super-rentals/mirage/config', ['exports'], function (exports) {
-  exports['default'] = function () {
-    this.get('/rentals', function (db, request) {
-      var rentals = [{
-        type: 'rentals',
-        id: 1,
-        attributes: {
-          title: 'Grand Old Mansion',
-          owner: 'Veruca Salt',
-          city: 'San Francisco',
-          type: 'Estate',
-          bedrooms: 15,
-          image: 'https://upload.wikimedia.org/wikipedia/commons/c/cb/Crane_estate_(5).jpg'
-        }
-      }, {
-        type: 'rentals',
-        id: 2,
-        attributes: {
-          title: 'Urban Living',
-          owner: 'Mike Teavee',
-          city: 'Seattle',
-          type: 'Condo',
-          bedrooms: 1,
-          image: 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Alfonso_13_Highrise_Tegucigalpa.jpg'
-        }
-      }, {
-        type: 'rentals',
-        id: 3,
-        attributes: {
-          title: 'Downtown Charm',
-          owner: 'Violet Beauregarde',
-          city: 'Portland',
-          type: 'Apartment',
-          bedrooms: 3,
-          image: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Wheeldon_Apartment_Building_-_Portland_Oregon.jpg'
-        }
-      }];
-
-      if (request.queryParams.city !== undefined) {
-        var filteredRentals = rentals.filter(function (i) {
-          return i.attributes.city.toLowerCase().indexOf(request.queryParams.city.toLowerCase()) !== -1;
-        });
-        return { data: filteredRentals };
-      } else {
-        return { data: rentals };
-      }
-    });
-  };
-});
-define("super-rentals/mirage/scenarios/default", ["exports"], function (exports) {
-  exports["default"] = function () /* server */{
-
-    /*
-      Seed your development database using your factories.
-      This data will not be loaded in your tests.
-       Make sure to define a factory for each model you want to create.
-    */
-
-    // server.createList('post', 10);
-  };
-});
-define('super-rentals/mirage/serializers/application', ['exports', 'ember-cli-mirage'], function (exports, _emberCliMirage) {
-  exports['default'] = _emberCliMirage.JSONAPISerializer.extend({});
-});
-define('super-rentals/models/rental', ['exports', 'ember-data'], function (exports, _emberData) {
-  exports['default'] = _emberData['default'].Model.extend({
-    title: _emberData['default'].attr(),
-    owner: _emberData['default'].attr(),
-    city: _emberData['default'].attr(),
-    type: _emberData['default'].attr(),
-    image: _emberData['default'].attr(),
-    bedrooms: _emberData['default'].attr()
-  });
-});
 define('super-rentals/resolver', ['exports', 'ember-resolver'], function (exports, _emberResolver) {
   exports['default'] = _emberResolver['default'];
 });
@@ -422,9 +303,36 @@ define('super-rentals/routes/contact', ['exports', 'ember'], function (exports, 
   exports['default'] = _ember['default'].Route.extend({});
 });
 define('super-rentals/routes/index', ['exports', 'ember'], function (exports, _ember) {
+
+  var rentals = [{
+    id: 1,
+    title: 'Grand Old Mansion',
+    owner: 'Veruca Salt',
+    city: 'San Francisco',
+    type: 'Estate',
+    bedrooms: 15,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/c/cb/Crane_estate_(5).jpg'
+  }, {
+    id: 2,
+    title: 'Urban Living',
+    owner: 'Mike TV',
+    city: 'Seattle',
+    type: 'Condo',
+    bedrooms: 1,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/0/0e/Alfonso_13_Highrise_Tegucigalpa.jpg'
+  }, {
+    id: 3,
+    title: 'Downtown Charm',
+    owner: 'Violet Beauregarde',
+    city: 'Portland',
+    type: 'Apartment',
+    bedrooms: 3,
+    image: 'https://upload.wikimedia.org/wikipedia/commons/f/f7/Wheeldon_Apartment_Building_-_Portland_Oregon.jpg'
+  }];
+
   exports['default'] = _ember['default'].Route.extend({
     model: function model() {
-      return this.get('store').findAll('rental');
+      return rentals;
     }
   });
 });
@@ -860,7 +768,7 @@ define("super-rentals/templates/components/rental-listing", ["exports"], functio
             "column": 0
           },
           "end": {
-            "line": 20,
+            "line": 19,
             "column": 10
           }
         },
@@ -928,7 +836,7 @@ define("super-rentals/templates/components/rental-listing", ["exports"], functio
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode(" - ");
+        var el3 = dom.createTextNode(" -  ");
         dom.appendChild(el2, el3);
         var el3 = dom.createComment("");
         dom.appendChild(el2, el3);
@@ -969,10 +877,6 @@ define("super-rentals/templates/components/rental-listing", ["exports"], functio
         var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n  ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
-        dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
@@ -983,7 +887,7 @@ define("super-rentals/templates/components/rental-listing", ["exports"], functio
         var element1 = dom.childAt(element0, [1]);
         var element2 = dom.childAt(element1, [1]);
         var element3 = dom.childAt(element0, [7]);
-        var morphs = new Array(10);
+        var morphs = new Array(9);
         morphs[0] = dom.createAttrMorph(element1, 'class');
         morphs[1] = dom.createElementMorph(element1);
         morphs[2] = dom.createAttrMorph(element2, 'src');
@@ -993,10 +897,9 @@ define("super-rentals/templates/components/rental-listing", ["exports"], functio
         morphs[6] = dom.createMorphAt(element3, 5, 5);
         morphs[7] = dom.createMorphAt(dom.childAt(element0, [9]), 3, 3);
         morphs[8] = dom.createMorphAt(dom.childAt(element0, [11]), 3, 3);
-        morphs[9] = dom.createMorphAt(element0, 13, 13);
         return morphs;
       },
-      statements: [["attribute", "class", ["concat", ["image ", ["subexpr", "if", [["get", "isWide", ["loc", [null, [2, 52], [2, 58]]], 0, 0, 0, 0], "wide"], [], ["loc", [null, [2, 47], [2, 67]]], 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["element", "action", ["toggleImageSize"], [], ["loc", [null, [2, 5], [2, 33]]], 0, 0], ["attribute", "src", ["concat", [["get", "rental.image", ["loc", [null, [3, 16], [3, 28]]], 0, 0, 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["content", "rental.title", ["loc", [null, [6, 6], [6, 22]]], 0, 0, 0, 0], ["content", "rental.owner", ["loc", [null, [8, 24], [8, 40]]], 0, 0, 0, 0], ["inline", "rental-property-type", [["get", "rental.type", ["loc", [null, [11, 46], [11, 57]]], 0, 0, 0, 0]], [], ["loc", [null, [11, 23], [11, 59]]], 0, 0], ["content", "rental.type", ["loc", [null, [11, 62], [11, 77]]], 0, 0, 0, 0], ["content", "rental.city", ["loc", [null, [14, 27], [14, 42]]], 0, 0, 0, 0], ["content", "rental.bedrooms", ["loc", [null, [17, 37], [17, 56]]], 0, 0, 0, 0], ["inline", "location-map", [], ["location", ["subexpr", "@mut", [["get", "rental.city", ["loc", [null, [19, 26], [19, 37]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [19, 2], [19, 39]]], 0, 0]],
+      statements: [["attribute", "class", ["concat", ["image ", ["subexpr", "if", [["get", "isWide", ["loc", [null, [2, 52], [2, 58]]], 0, 0, 0, 0], "wide"], [], ["loc", [null, [2, 47], [2, 67]]], 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["element", "action", ["toggleImageSize"], [], ["loc", [null, [2, 5], [2, 33]]], 0, 0], ["attribute", "src", ["concat", [["get", "rental.image", ["loc", [null, [3, 16], [3, 28]]], 0, 0, 0, 0]], 0, 0, 0, 0, 0], 0, 0, 0, 0], ["content", "rental.title", ["loc", [null, [6, 6], [6, 22]]], 0, 0, 0, 0], ["content", "rental.owner", ["loc", [null, [8, 24], [8, 40]]], 0, 0, 0, 0], ["inline", "rental-property-type", [["get", "rental.type", ["loc", [null, [11, 46], [11, 57]]], 0, 0, 0, 0]], [], ["loc", [null, [11, 23], [11, 59]]], 0, 0], ["content", "rental.type", ["loc", [null, [11, 63], [11, 78]]], 0, 0, 0, 0], ["content", "rental.city", ["loc", [null, [14, 27], [14, 42]]], 0, 0, 0, 0], ["content", "rental.bedrooms", ["loc", [null, [17, 37], [17, 56]]], 0, 0, 0, 0]],
       locals: [],
       templates: []
     };
@@ -1172,60 +1075,17 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
       };
     })();
     var child1 = (function () {
-      var child0 = (function () {
-        return {
-          meta: {
-            "revision": "Ember@2.7.0",
-            "loc": {
-              "source": null,
-              "start": {
-                "line": 17,
-                "column": 4
-              },
-              "end": {
-                "line": 19,
-                "column": 4
-              }
-            },
-            "moduleName": "super-rentals/templates/index.hbs"
-          },
-          isEmpty: false,
-          arity: 1,
-          cachedFragment: null,
-          hasRendered: false,
-          buildFragment: function buildFragment(dom) {
-            var el0 = dom.createDocumentFragment();
-            var el1 = dom.createTextNode("      ");
-            dom.appendChild(el0, el1);
-            var el1 = dom.createElement("li");
-            var el2 = dom.createComment("");
-            dom.appendChild(el1, el2);
-            dom.appendChild(el0, el1);
-            var el1 = dom.createTextNode("\n");
-            dom.appendChild(el0, el1);
-            return el0;
-          },
-          buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
-            var morphs = new Array(1);
-            morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 0, 0);
-            return morphs;
-          },
-          statements: [["inline", "rental-listing", [], ["rental", ["subexpr", "@mut", [["get", "rentalUnit", ["loc", [null, [18, 34], [18, 44]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [18, 10], [18, 46]]], 0, 0]],
-          locals: ["rentalUnit"],
-          templates: []
-        };
-      })();
       return {
         meta: {
           "revision": "Ember@2.7.0",
           "loc": {
             "source": null,
             "start": {
-              "line": 13,
+              "line": 14,
               "column": 0
             },
             "end": {
-              "line": 21,
+              "line": 16,
               "column": 0
             }
           },
@@ -1239,14 +1099,7 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
           var el0 = dom.createDocumentFragment();
           var el1 = dom.createTextNode("  ");
           dom.appendChild(el0, el1);
-          var el1 = dom.createElement("ul");
-          dom.setAttribute(el1, "class", "results");
-          var el2 = dom.createTextNode("\n");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createComment("");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("  ");
-          dom.appendChild(el1, el2);
+          var el1 = dom.createComment("");
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
           dom.appendChild(el0, el1);
@@ -1254,12 +1107,12 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
         },
         buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
           var morphs = new Array(1);
-          morphs[0] = dom.createMorphAt(dom.childAt(fragment, [1]), 1, 1);
+          morphs[0] = dom.createMorphAt(fragment, 1, 1, contextualElement);
           return morphs;
         },
-        statements: [["block", "each", [["get", "rentals", ["loc", [null, [17, 12], [17, 19]]], 0, 0, 0, 0]], [], 0, null, ["loc", [null, [17, 4], [19, 13]]]]],
-        locals: ["rentals"],
-        templates: [child0]
+        statements: [["inline", "rental-listing", [], ["rental", ["subexpr", "@mut", [["get", "rental", ["loc", [null, [15, 26], [15, 32]]], 0, 0, 0, 0]], [], [], 0, 0]], ["loc", [null, [15, 2], [15, 34]]], 0, 0]],
+        locals: ["rental"],
+        templates: []
       };
     })();
     return {
@@ -1272,8 +1125,8 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 21,
-            "column": 16
+            "line": 28,
+            "column": 3
           }
         },
         "moduleName": "super-rentals/templates/index.hbs"
@@ -1312,9 +1165,13 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
         var el2 = dom.createComment("");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
+        var el1 = dom.createTextNode("\n\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("\n{{#list-filter\n   filter=(action 'filterByCity')\n   as |rentals|}}\n  <ul class=\"results\">\n    {{#each rentals as |rentalUnit|}}\n      <li>{{rental-listing rental=rentalUnit}}</li>\n    {{/each}}\n  </ul>\n{{/list-filter}}");
         dom.appendChild(el0, el1);
         return el0;
       },
@@ -1322,35 +1179,13 @@ define("super-rentals/templates/index", ["exports"], function (exports) {
         var morphs = new Array(2);
         morphs[0] = dom.createMorphAt(dom.childAt(fragment, [0]), 7, 7);
         morphs[1] = dom.createMorphAt(fragment, 2, 2, contextualElement);
-        dom.insertBoundary(fragment, null);
         return morphs;
       },
-      statements: [["block", "link-to", ["about"], ["class", "button"], 0, null, ["loc", [null, [8, 2], [10, 14]]]], ["block", "list-filter", [], ["filter", ["subexpr", "action", ["filterByCity"], [], ["loc", [null, [14, 10], [14, 33]]], 0, 0]], 1, null, ["loc", [null, [13, 0], [21, 16]]]]],
+      statements: [["block", "link-to", ["about"], ["class", "button"], 0, null, ["loc", [null, [8, 2], [10, 14]]]], ["block", "each", [["get", "model", ["loc", [null, [14, 8], [14, 13]]], 0, 0, 0, 0]], [], 1, null, ["loc", [null, [14, 0], [16, 9]]]]],
       locals: [],
       templates: [child0, child1]
     };
   })());
-});
-define('super-rentals/tests/mirage/mirage/config.jshint', ['exports'], function (exports) {
-  QUnit.module('JSHint | mirage/config.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'mirage/config.js should pass jshint.');
-  });
-});
-define('super-rentals/tests/mirage/mirage/scenarios/default.jshint', ['exports'], function (exports) {
-  QUnit.module('JSHint | mirage/scenarios/default.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'mirage/scenarios/default.js should pass jshint.');
-  });
-});
-define('super-rentals/tests/mirage/mirage/serializers/application.jshint', ['exports'], function (exports) {
-  QUnit.module('JSHint | mirage/serializers/application.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'mirage/serializers/application.js should pass jshint.');
-  });
 });
 define('super-rentals/utils/google-maps', ['exports', 'ember'], function (exports, _ember) {
 
@@ -1413,7 +1248,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("super-rentals/app")["default"].create({"name":"super-rentals","version":"0.0.0+b2327d27"});
+  require("super-rentals/app")["default"].create({"name":"super-rentals","version":"0.0.0+56a2e892"});
 }
 
 /* jshint ignore:end */
