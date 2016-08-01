@@ -48,7 +48,6 @@ define('super-rentals/tests/helpers/destroy-app', ['exports', 'ember'], function
 
   function destroyApp(application) {
     _ember['default'].run(application, 'destroy');
-    server.shutdown();
   }
 });
 define('super-rentals/tests/helpers/destroy-app.jshint', ['exports'], function (exports) {
@@ -571,15 +570,6 @@ define('super-rentals/tests/integration/components/rental-listing-test.jshint', 
     assert.ok(true, 'integration/components/rental-listing-test.js should pass jshint.');
   });
 });
-define('super-rentals/tests/models/rental.jshint', ['exports'], function (exports) {
-  'use strict';
-
-  QUnit.module('JSHint | models/rental.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'models/rental.js should pass jshint.');
-  });
-});
 define('super-rentals/tests/resolver.jshint', ['exports'], function (exports) {
   'use strict';
 
@@ -686,28 +676,6 @@ define('super-rentals/tests/unit/helpers/rental-property-type-test.jshint', ['ex
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
     assert.ok(true, 'unit/helpers/rental-property-type-test.js should pass jshint.');
-  });
-});
-define('super-rentals/tests/unit/models/rental-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
-
-  (0, _emberQunit.moduleForModel)('rental', 'Unit | Model | rental', {
-    // Specify the other units that are required for this test.
-    needs: []
-  });
-
-  (0, _emberQunit.test)('it exists', function (assert) {
-    var model = this.subject();
-    // let store = this.store();
-    assert.ok(!!model);
-  });
-});
-define('super-rentals/tests/unit/models/rental-test.jshint', ['exports'], function (exports) {
-  'use strict';
-
-  QUnit.module('JSHint | unit/models/rental-test.js');
-  QUnit.test('should pass jshint', function (assert) {
-    assert.expect(1);
-    assert.ok(true, 'unit/models/rental-test.js should pass jshint.');
   });
 });
 define('super-rentals/tests/unit/routes/about-test', ['exports', 'ember-qunit'], function (exports, _emberQunit) {
