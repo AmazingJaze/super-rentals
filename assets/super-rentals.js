@@ -103,7 +103,7 @@ define('super-rentals/controllers/index', ['exports', 'ember'], function (export
             //   return this.get('store').findAll('rental');
           }
 
-        return Promise.resolve(filteredResults);
+        return Promise.resolve(filteredResults); // jshint ignore:line
       }
     }
   });
@@ -1312,7 +1312,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("super-rentals/app")["default"].create({"name":"super-rentals","version":"0.0.0+56a2e892"});
+  require("super-rentals/app")["default"].create({"name":"super-rentals","version":"0.0.0+94719593"});
 }
 
 /* jshint ignore:end */
