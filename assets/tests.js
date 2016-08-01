@@ -40,7 +40,7 @@ define('super-rentals/tests/controllers/index.jshint', ['exports'], function (ex
   QUnit.module('JSHint | controllers/index.js');
   QUnit.test('should pass jshint', function (assert) {
     assert.expect(1);
-    assert.ok(true, 'controllers/index.js should pass jshint.');
+    assert.ok(false, 'controllers/index.js should pass jshint.\ncontrollers/index.js: line 15, col 74, Missing semicolon.\ncontrollers/index.js: line 16, col 12, Missing semicolon.\ncontrollers/index.js: line 23, col 15, \'Promise\' is not defined.\n\n3 errors');
   });
 });
 define('super-rentals/tests/helpers/destroy-app', ['exports', 'ember'], function (exports, _ember) {
