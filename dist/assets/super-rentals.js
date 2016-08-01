@@ -1312,7 +1312,7 @@ catch(err) {
 /* jshint ignore:start */
 
 if (!runningTests) {
-  require("super-rentals/app")["default"].create({"name":"super-rentals","version":"0.0.0+94719593"});
+  require("super-rentals/app")["default"].create({"name":"super-rentals","version":"0.0.0+2fa75727"});
 }
 
 /* jshint ignore:end */
